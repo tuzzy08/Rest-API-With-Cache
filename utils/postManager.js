@@ -1,8 +1,7 @@
-const mongoose = require('mongoose');
+const Post = require('../models/post');
+
 /** Utility class to manage 'Post' resource */
 class PostManager {
-  static Post = mongoose.model('Post');
-
   /**
    * Gets a post by id.
    * @param {string} postId - the ID of the requested post.
@@ -11,7 +10,7 @@ class PostManager {
     try {
       // Check if post id is specified and throw an error if not
       if (!postId || typeof postId !== 'string') throw new Error('Invalid post Id');
-      const post = await this.Post.findById(postId);
+      const post = Post.findById(postId);
 
       if (post) {
         return post;
@@ -24,9 +23,9 @@ class PostManager {
   /**
    * Gets and returns all posts.
    */
-  static async getPosts(next) {
+  static async getAllPosts(next) {
     try {
-      const posts = await this.Post.find();
+      const posts = await Post.find();
       if (posts) return posts;
 
       return 'No Posts found';
@@ -52,7 +51,7 @@ class PostManager {
         author
       } = options;
 
-      const post = new this.Post();
+      const post = new Post();
       post.title = title;
       post.body = body;
       post.author = author;
@@ -66,10 +65,41 @@ class PostManager {
 
   /**
    * Edits a post by id
-   * @param {string} postId - represents the id of the post to be edited
+   * @param {object} options 
    */
-  static async editPost(postId) {
+  static async editPost(postId, options, next) {
+    try {
+      // Check if argument is an object
+      if (!options || typeof options !== 'object') {
+        next(new Error('Invalid options'));
+      }
 
+      const {
+        body,
+        title
+      } = options;
+
+      const post = await Post.findById(postId);
+      if (post) {
+        post.title = title;
+        post.body = body;
+        const result = await post.save();
+        return result;
+      }
+
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async deletePost(postId) {
+    try {
+      if (!postId || typeof postId !== 'string') throw new Error('Invalid post Id');
+      const result = await Post.remove({
+        _id: postId
+      });
+      return result;
+    } catch (error) {}
   }
 }
 

@@ -8,7 +8,7 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 
 const app = express();
-
+require('dotenv').config();
 require('./config/db');
 
 app.use(logger('dev'));
