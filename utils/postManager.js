@@ -41,7 +41,7 @@ class PostManager {
    */
   static async createPost(options, next) {
     try {
-      // Check argument is a an object
+      // Check if argument is an object
       if (!options || typeof options !== 'object') {
         next(new Error('Invalid options'));
       }

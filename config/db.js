@@ -6,7 +6,7 @@ const error = chalk.bold.yellow;
 const disconnected = chalk.bold.red;
 
 // MongoDb atlas connection
-const atlasConnectionUrl = ``;
+const dbConnectionUrl = process.env.ATLAS_URL;
 
 // Set up connection to mlab
 // const mLabConnectionUrl = `mongodb://${process.env.MLAB_USR}:${process.env.MLAB_PASS}@ds241968.mlab.com:41968/${process.env.MLAB_DB}`;
@@ -20,7 +20,7 @@ const options = {
 
 const connect = (next) => {
 	try {
-		mongoose.connect(atlasConnectionUrl, options);
+		mongoose.connect(dbConnectionUrl, options);
 		mongoose.Promise = global.Promise;
 
 		mongoose.connection.on('connected', () => {
